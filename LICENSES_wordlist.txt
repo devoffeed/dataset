@@ -1,0 +1,51 @@
+# Лицензии источников
+
+`en_all_words.txt`, `en_US_words.txt`, `en_GB_only_words.txt` и
+`en_hunspell_words.txt` — общественное достояние (CC0 1.0 / Unlicense), текст в
+[LICENSE](LICENSE). Причина: они собраны только из источников, свободных для
+любого использования, включая коммерческое.
+
+## Что попало в словарь
+
+| Файл | Источник | Лицензия | В словаре |
+|---|---|---|---|
+| `words_alpha.txt` | dwyl/english-words | Public Domain (Unlicense) | да |
+| `hunspell-en.dic` / `.aff` | wooorm/dictionaries ← wordlist.aspell.net (SCOWL **en_US**) | MIT © 2015 Titus Wormer | да |
+| `hunspell-en-GB.dic` | wooorm/dictionaries ← SCOWL **en_GB** | MIT © 2015 Titus Wormer | только фильтр |
+| `freq-en-50k.txt` | hermitdave/FrequencyWords | MIT © 2016 Hermit Dave | да |
+| `google-10k-usa*.txt` | first20hours/google-10000-english ← Google Web Trillion Word Corpus (LDC2006T13) | только учебные/личные цели, коммерчески запрещено без лицензии LDC | **нет** |
+
+## Результаты сборки
+
+| Файл | Слов | Что это |
+|---|---|---|
+| `en_all_words.txt` | 383 973 | объединение всех источников без фильтров |
+| `en_US_words.txt` | 383 021 | американский вариант: минус 1 157 слов, встречающихся только в SCOWL en_GB |
+| `en_GB_only_words.txt` | 1 157 | вырезанные британские слова (`colour`, `organise`, `centre`, `licence`…) |
+| `en_hunspell_words.txt` | 47 828 | база SCOWL en_US без словоформ |
+
+Американский вариант = `en_all_words.txt` за вычетом `en_GB_only_words.txt`.
+Проверка: `color`, `organize`, `center`, `analyze`, `traveling` есть, а `colour`,
+`organise`, `centre`, `analyse`, `travelling` — нет. Часть двойных форм (`grey`,
+`defence`) остаётся, потому что SCOWL en_US считает их допустимыми
+американскими вариантами.
+
+## Что исключено и почему
+
+Google-файлы лежат в каталоге как справочные, но в `SOURCES` их нет — они
+перечислены в `EXCLUDED` в `fetch_words.py`. Причина: данные производные от
+Google Web Trillion Word Corpus, автор прямо пишет, что коммерческое
+использование требует отдельной лицензии у Linguistic Data Consortium.
+
+Если файл пойдёт в коммерческий продукт — не запускай загрузку google-файлов
+и не добавляй их в `merged`.
+
+## Пересборка
+
+```
+python fetch_words.py
+```
+
+Скрипт скачивает источники, если их ещё нет (уже скачанные пропускает),
+и собирает `en_all_words.txt`, `en_US_words.txt`, `en_GB_only_words.txt`,
+`en_hunspell_words.txt`.
